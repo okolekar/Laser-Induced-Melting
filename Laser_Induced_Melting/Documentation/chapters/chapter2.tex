@@ -1,0 +1,173 @@
+\chapter{Mathematical Formulation\label{cha:chapter2}}
+
+Linear partial differential equations of the second order can be classified as one of the three types, hyperbolic, parabolic, and elliptic and can be reduced to an appropriate canonical or normal form\cite{debnath2010nonlinear}. Parabolic Partial Differential Equations describes the time evolution towards the steady state of an energy system. These equation involve the spatial and the temporal derivatives of the independent variables. This section discusses the parabolic PDEs for each approach separately and also the weak form of these equation used in the numerical scheme.\\ 
+Temperature is a macroscopic properity which expresses the state of agitation or disordered motion of particles, and hence it is related to the kinetic energy of these particles. \\ 
+The energy of the system corresponding to the state  of particle agitation is referred to as a form of internal energy of that  system sometimes called, thermal energy\cite{erickson1985heat}. Heat and temperature are interconnected through the fundamental principle of Fourier's Law. The temperature $\theta$ in the material is governed by the heat equation and in cylindrical coordinates is given by equation \ref{eq:fourier} along with the energy input given by the equation \ref{eq:second}.
+\begin{subequations}
+\begin{align}
+\rho c \frac{\partial \theta}{\partial \tau} &= \frac{k}{r} \frac{\partial}{\partial r} \left( r \frac{\partial \theta}{\partial r} \right) + k \frac{\partial^2 \theta}{\partial \chi^2} \label{eq:fourier} \\
+k \frac{\partial \theta}{\partial \chi} &= -I \label{eq:second}
+\end{align}
+\end{subequations}
+
+\subsection{The Non Dimensionalization of Variables \label{sec:Nondimensionalization}}
+The Stefan problem, as first formulated by Stefan in his research paper\cite{stefan1891theorie} in 1891, is a fundamental mathematical model employed to describe the phase transition of a material. It is a common convention used for simplicity and ease of comparison between different studies, to model the phase change at a temperature equal to zero. Non dimensionalization reformulates the problem and introduces the dimensionless temperature and other variables without altering the underlying physics. The dimensionless temperature is introduced in such a way, that the phase change occurs at '0' and any temperature below 0 represents phase 1 and any temperature above 0 represents phase 2.\\ 
+We now introduce the dimensionless variables as follows
+\begin{subequations}
+\begin{align}
+z &= \frac{I_{\text{ref}}^2}{k(T_v - T_m)}  \chi \label{eq:Dimsionless_z}\\
+\bar{r} &= \frac{1}{w_0}  r \\
+t &= \rho c \frac{I_{\text{ref}}^2}{k(T_v - T_m)^2}\tau\\
+T &= \frac{\theta - \theta_m}{\theta_v - \theta_m}\\
+\epsilon &= \frac{k^2(\theta_v - \theta_m)^2}{w_0^2I_{\text{ref}}^2} \label{eq:Epsilon}
+\end{align}
+\end{subequations}
+Using the definition provided in \eqref{eq:Dimsionless_z} to \eqref{eq:Epsilon} we can now reintroduce the heat equation \eqref{eq:fourier} in the dimensionless form together with influx of energy \eqref{eq:second} as follows 
+\begin{align}
+\frac{\partial T}{\partial t} &= \epsilon \frac{1}{\bar{r}} \frac{\partial}{\partial \bar{r}} \left( \bar{r} \frac{\partial T}{\partial \bar{r}} \right) + \frac{\partial^2 T}{\partial z^2} \label{eq:nondimensional}\\
+\text{and} \nonumber \\
+\frac{\partial T}{\partial z} &= -\frac{I}{I_{\text{ref}}}, \quad z = 0
+\end{align}
+
+\noindent where,\\
+\indent $\theta_m = \text{melting Temperature in K}$\\
+\indent $\theta_v = \text{vaporisation Temperature in K}$\\
+\indent $z$ = depth\\
+\indent r = radial dimension\\
+\indent $\rho = $ density in kg $m^{-3}$.\\
+\indent c = specific heat capacity\\
+\indent $\tau$ = time in s\\
+\indent $\theta$ = temperature in K\\
+\indent $w_0 =$ waist of the heating source or laser beam\\
+\indent k = thermal conductivity in $W m^{-1} K^{-1}$\\
+\indent $I_{ref} =$ reference input laser intensity\\
+\indent $I$ = Input Intensity\\
+
+Typically, numerical methods for solving phase change problems can be characterized into three categories: front-tracking methods, front-fixing methods and fixed-domain methods\cite{_2000}. The Stefan Problem and the Enthalpy Problem are classified as front-tracking method and fixed-domain method respectively. Both the methods are discussed in detail below.
+
+ \section{The Stefan Problem \label{sec:The Stefan Approach}}
+ The Stefan Problem is a representation of the first-order phase transitions in matter through a boundary value problem for PDEs in which a discontinuity surface, internal to the domain, can move with time\cite{salvatori2009stefan}.\\
+ Consider the heat transfer in a solid liquid domain ($\Omega$) 0 $\leq$ z $\leq$ 1 . The portion ($\Omega_l$) 0 $\leq$ s(t) of this region is occupied by liquid and the portion ($\Omega_s$) s(t)$\leq$1 is occupied by solid. The temperature in both the region is governed by the heat equation, in the dimensionless form it reads\\
+ \begin{subequations}
+     \begin{align}
+         \frac{\partial T_i}{\partial t} = \frac{\partial^2 T_i}{\partial z^2} \quad \text{in}\quad \Omega_i \quad \text{for}\quad i = s,l. \label{eq:Stefan_Heat_Transfer}
+         \end{align}
+ \end{subequations}
+         At the boundary $z$ = 0 the laser supplies an intensity $I = I(r,t)$, \\
+\begin{subequations}
+    \begin{align}
+         \frac{\partial T_l}{\partial z} = -\frac{I}{I_{ref}}, \quad z = 0 \label{eq:Stefan_Boundary1}\\ \nonumber
+         \end{align}
+ \end{subequations}
+         In order for the phase change from solid to liquid in a material to transpire, we need to provide an additional amount of heat energy commonly referred to as Latent Heat of fusion. The latent in its dimensionless form is given below.\\
+\begin{subequations}
+    \begin{align}
+            \lambda_f = \frac{L_f}{c(T_v-T_m)}
+            \\ \nonumber
+    \end{align}
+\end{subequations}
+At the solid liquid interface we have the well known \textit{Stefan Condition} which expresses the absorption of heat needed for the phase change.\\
+    \begin{subequations}
+        \begin{align}
+            \left. \frac{\partial T_l}{\partial z} \right|_{z \uparrow s} - \left. \frac{\partial T_s}{\partial z} \right|_{z \downarrow s} = -\lambda_f \frac{ds}{dt}, \qquad z = s(t). \label{eq:Stefan_specialBc}
+            \\ \nonumber
+        \end{align}
+    \end{subequations}
+The $z \uparrow s $ indicate the fact that we consider the derivative of the dimensionless temperature, under the limit when $z$ approaches $s$ (the liquid-solid interface) from the liquid phase (in terms of dimensionless temperature, we consider it from the positive side).\\  
+
+The $z \downarrow s $ indicate the fact that we consider the derivative of the dimensionless temperature, under the limit when $z$ approaches $s$ (the solid-liquid interface) from the solid phase (in terms of dimensionless temperature, we consider it from the negative side).\\
+
+The dimensionless temperature T at the free boundary (moving phase front) is assumed to be continuous across the interface\\
+\begin{subequations}
+        \begin{align}
+            T_s = T_l = 0 \qquad z = s(t). \label{eq:stefan_boundary2}
+            \\ \nonumber
+        \end{align}
+    \end{subequations}
+The boundary condition at infinity is given as follows\\
+\begin{subequations}
+        \begin{align}
+            T_s \rightarrow T_a \qquad z \rightarrow \infty. \label{eq:stefan_boundary3}
+            \\ \nonumber
+        \end{align}
+    \end{subequations}
+where $T_a$ is the dimensionless ambient temperature of the material.\\
+The equation \eqref{eq:Stefan_Heat_Transfer} along with the boundary conditions \eqref{eq:Stefan_Boundary1}, \eqref{eq:stefan_boundary2}, \eqref{eq:stefan_boundary3} and \eqref{eq:Stefan_specialBc} defines our problem statement. However, we need to find suitable initial conditions, which are discussed in the section \ref{sec:initial_condition_given}.
+\subsection{Weak Form}
+The weak form of the Stefan problem reads as follows: -
+\begin{subequations}
+    \begin{align}
+        &\int_0^s \left\{ \frac{\partial T_l}{\partial t} v(z,t) + \frac{\partial T_l}{\partial z} \frac{\partial v}{\partial z} \right \}dz = \frac{I}{I_{ref}}v(0,t), \label{eq:Stefan_Weak_formorig} \\
+        \nonumber &\text{and}\\
+        &\int_s^{z_{b}} \left\{ \frac{\partial T_s}{\partial t} w(z,t) + \frac{\partial T_s}{\partial z} \frac{\partial w}{\partial z} \right \}dz = 0 \label{eq:Stefan_Weak_formcalc}
+    \end{align}
+\end{subequations}
+Where $v(z,t)$ and $w(z,t)$ are the test functions.
+\subsection{Challenges associated with the Stefan Problem}
+The Stefan Problem poses two challenges: -
+\begin{enumerate}
+    \item With evolution of each time step the geometry of the phase changes.\\
+The geometry of this evolving boundary must be suitably described with a discrete model\cite{2009}. 
+\item The temperature field must be discretised in such a way as the jump in the heat flux, i.e. in the temperature gradient, at the phase interface can be reproduced\cite{2009}. 
+\end{enumerate}
+
+ \section{The Enthalpy Problem \label{sec:tech}}
+ To overcome the above mentioned challenges in the Stefan Problem, many researchers use the  fixed domain method. The Enthalpy Problem is one of the fixed domain methods. The advantage of this method is that it applies to the whole domain regardless of the phase at a particular material point, which in turn implies that the explicit tracking of the phase
+change interface is not required. Moreover, the enthalpy method is applicable to problems in which phase change occurs either at a sharp melting temperature or over a temperature range\cite{_2000}.\\  
+During sensible heating $(\rho c \theta)$ the temperature of the material increases. It is imperative to provide sensible heat to the material to elevate it's temperature to the melting point. Subsequently an additional infusion of thermal energy in the form of Latent Heat $L_f$ is also needed to transpire the phase transition event.\\
+The region with temperature between the solidus and the liquidus temperature is referred to as \textit{mushy region}\cite{verhoeven2003modelling}. The main objective of the enthalpy approach is to track the mushy region. \\ 
+For nondimentionalisation purpose we introduce the  terms described in the table \ref{tabel:Dedimensionalisation}.\\
+\begin{table}[htbp]
+\begin{tabular}{|m{27em}|m{12em}|} % Two columns separated by a vertical line
+\hline
+\textbf{Description} & \textbf{Equation} \\ % Each entry separated by "&"
+\hline % Horizontal line
+The enthalpy at vaporisation temperature &  \begin{equation}
+    \eta_v = \rho c \theta_v + \rho L_f \label{eq:Enthalpy_vapour}
+\end{equation} \\
+\hline
+The enthalpy at melting temperature for crystalline materials & \begin{equation}  \eta_m = \rho c \theta_m  \end{equation}\\
+\hline
+The enthalpy at solidus temperature for amorphous material & \begin{equation}\eta_{sol}=\rho c \theta_{sol} \end{equation}\\
+\hline
+The non-dimensional enthalpy for crystalline material & \begin{equation} H = \frac{(\eta - \eta_m )}{(\eta_v - \eta_m)}\end{equation} \\
+\hline
+The non-dimensional enthalpy for amorphous materials & \begin{equation}H = \frac{(\eta - \eta_{sol} )}{(\eta_v - \eta_{sol})} \label{eq:liqudiousnonenahlpy}\end{equation}\\
+\hline
+The constant $D_1$ defined for crystalline material & \begin{equation} D_1 = \frac{\rho c (\theta_v - \theta_m)}{\eta_v - \eta_m}\end{equation}\\
+\hline
+The constant $D_2$ defined for amorphous material & \begin{equation}D_2 = \frac{\rho c (\theta_v - \theta_{sol})}{\eta_v - \eta_{sol}} \label{eq:D2_constant}\end{equation}\\
+\hline
+\end{tabular}
+\caption{Dimensionless Terms}
+\label{tabel:Dedimensionalisation}
+\end{table}\\
+We define the relation between the dimensionless enthalpy and dimensionless temperature as follows\\\\
+$\text{H(T)} =
+\begin{cases}
+D_1 T, & \text{T < 0}, \\ \\
+[0, D_1 \lambda_f], & \text{T = 0}, \\ \\
+D_1 T + D_1\lambda_f, & \text{T > 0}
+\end{cases}\quad\quad\quad\quad\quad\text{for crystalline materials} \label{eq:slope}$ \\
+\\
+\\
+$\text{H(T)} =
+\begin{cases}
+D_2 T, & T \leq 0, \\ \\
+D_2 T+ D_2 \lambda_f \frac{T}{T_{liq}}, & 0 \leq T \leq T_{liq}, \\ \\
+D_2 T + D_2\lambda_f, & T > T_{liq}
+\end{cases}\quad\text{for amorphous materials}$\\
+
+\noindent where,\\\\
+\indent $\lambda_f = \frac{L_f}{c(T_v - T_m)}$ constant for crystalline materials\\\\
+\indent $\lambda_f = \frac{L_f}{c(T_v - T_{sol})}$ constant  for amorphous materials\\
+\subsection{Weak Form}
+The weak form of the Enthalpy problem is given as follows\\
+\begin{subequations}
+\begin{align}
+\int_{\Omega}\frac{\partial{H}}{\partial{t}}vdz = D\frac{I}{I_{ref}}v(0) - D\int_{\Omega}\frac{\partial{T}}{\partial{z}}\frac{\partial{{v}}}{\partial{z}}dz \label{eq:Entalpyvarform}
+\end{align}
+\end{subequations}\\
+where $v(z)$ is the weight function.\\
+
+Letting the enthalpy at the last node where $z = z_b$ ($z_b$ is the total length under consideration) equal to the enthalpy at atmospheric temperature and maintaining a constant temperature at last node equal to atmospheric temperature for the entire time of the simulation $H_N(t) \equiv H(T_a) \quad\text{and}\quad T_N(t) \equiv T_a$ we take care of the Dirichlet boundary condition.\\ In the next chapter, we discuss in detail the discretization and solution techniques.\\ 

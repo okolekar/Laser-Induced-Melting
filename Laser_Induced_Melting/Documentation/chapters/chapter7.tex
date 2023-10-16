@@ -1,0 +1,41 @@
+\chapter{Conclusion\label{cha:chapter7}}
+In conclusion, we have successfully developed a program to track the location of the solid liquid phase front using two approaches: the Enthalpy problem approach and the Stefan problem approach. The former method is referred to as a fixed domain method, while the latter is referred to as a front tracking method.\\
+In the fixed domain method, the temperature-enthalpy relation is used to track the phase front.On the other hand, the front tracking method employs the Arbitrary  Euler-Lagrange Approach to track the position of the phase front. The fixed grid method is applicable to both amorphous and crystalline materials, while the variable space grid can only be employed for crystalline materials.\\
+In the Enthalpy problem approach, for both amorphous and crystalline materials, we validated two cases for the heat transfer verification. The first case with both the ends at a fixed temperature, usually referred to as type I boundary condition, and the second case includes one end at a fixed temperature and other end insulated, commonly referred to as type II boundary condition. In both the cases, we observed a good agreement with the analytical solution. We also conducted a mesh convergence test and found an exponential decay in errors after 300 nodes.\\
+For the type II boundary condition, we analyzed the effect of adding a term to the analytical solution. The location of the phase front was tracked successfully using this method and was compared with the analytical scheme.  A staircase-like behaviour in the solution of the phase front location for lower number of nodes from the Enthalpy problem approach was observed. Additionally, we encountered a convergence issue during the phase transition in the 2D fixed grid method due to the the temperature at the first node crossing the vaporisation temperature, making the problem unphysical. \\
+We also compared the location of interface obtained from the variable space grid method. The solution exhibited a good trend with the analytical one, but exact overlap is not achieved due to the latent heat effects. Further, in 2D settings, we saw for the fixed grid method we employed the new numerical approach as suggested by Zhao-chun Wu \cite{Wu+2005+281+288}. However, his method has issues with the velocity update.\\
+The entire program was built using Object-Oriented Programming, as methods can be passed to a function or another method along with the attributes by just passing an instance of a class, allowing simplicity in programming. \\
+
+\section{Problems Encountered and Experiences\label{sec:problems}}
+
+Earlier, for one dimensional Enthalpy problem approach, only type II boundary condition for the verification of the heat transfer was planned. The heat transfer results from the scheme showed an acceptable agreement with the analytical one with some stability issues.\\
+Later, I decided to independently verify the results of heat transfer for a type I boundary condition to assess the stability condition. During this second verification, the results exhibited a bias toward the end where heat flux was applied. Upon performing manual calculations to investigate this bias, it was discovered that the input laser had not been correctly turned off. The scheme was so designed that laser power in the inputs script would be overridden by the material model. This was due to the Object-Oriented programming where the instance of the material model was not lost even after the function execution was completed. This led to inaccuracies throughout the scheme. 
+\textbf{Lessons Learnt:} While Object-Oriented Programming can be advantageous for passing attributes and methods, it's important to be aware that, unlike functions where the scope of a variable is limited to within the function, and the variable is lost once the function is completed, the attributes of a class are not lost and retain the data from the previous calculation unless explicitly reset or reinitialized. This also highlights the importance of the testing and verification of the code for various cases.
+
+\section{Acknowledgement\label{sec:Acknowledgement}}
+
+I extend my sincere gratitude to Dr. Ing. Stefan Prüger for his invaluable assistance at every stage of this project, particularly in the verification of the type I and II boundary conditions. His guidance and insights were of great help in addressing challenges, understanding the physics and enhancing the overall quality of the work.\\
+
+I would also like to acknowledge the contributions of authors of the paper 'Modelling laser induced melting'  Verhoeven J.C.J, Jansen, J. K. M., Mattheij, R. M. M., and Smith, W. R. whose mathematical formulation served as the foundation for implementing the Finite Element Method (FEM) scheme in our project.\\
+
+Lastly, I am thankful to TU Berlin for providing the LaTeX template on Overleaf, enabling us to produce this work seamlessly and efficiently.
+\newpage
+\section{Milestones - status\label{sec:Milestone}}
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|} \hline 
+         Milestone& Status\\ \hline 
+         Programming of the 1D Enthalpy problem& Yes\\ \hline 
+         Heat Transfer Verification with type I boundary condition& Yes\\ \hline 
+         Heat Transfer Verification with type II boundary condition& Yes\\ \hline 
+         Verification of the position of the phase front& Yes\\ \hline 
+         Programming of the 1D Stefan problem& Yes\\ \hline 
+         Verification of the position of the phase front & Yes\\ \hline 
+         Programming of the 2D Enthalpy problem& Yes\\ \hline 
+ Programming of the 2D Stefan problem &Yes\\ \hline
+    \end{tabular}
+    \caption{Milestone status of the project}
+    \label{tab:Milestone status}
+\end{table}

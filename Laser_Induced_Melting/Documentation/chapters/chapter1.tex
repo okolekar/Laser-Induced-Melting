@@ -1,0 +1,43 @@
+\chapter{Introduction\label{cha:chapter1}}
+
+\section{Motivation\label{sec:moti}}
+
+From the automotive industry and space technology to medical applications, manufacturing stands as a cornerstone in equipment or tool production. Manufacturing requires precise knowledge of processes that may involve phase change in the material. Whether in the context of melting, ablation, or other transitions, phase change plays a critical role in determining the material properties. In the case of outer space applications, it becomes very important to explicitly track the phase change, as the equipment is subjected to an extreme environment. The phase change in crystalline materials occurs at a sharp temperature, whereas in amorphous materials, it occurs over a range of temperatures. Heat transfer plays an important role in these processes. Temperature represents the measure of thermal energy in the body and contributes to this phenomenon. The rate and direction of phase change may affect the properties and functionality of the manufactured tool, making this phenomenon interesting to simulate.
+
+\section{Objective\label{sec:objective}}
+
+The objective of this project is to develop an FEA program using the Galerkin method\cite{galerkin1915series} for the Enthalpy Problem\cite{verhoeven2003modelling} and Stefan Problem\cite{stefan1891theorie}\cite{verhoeven2003modelling} in 2D settings that would explain the temperature distribution and track the phase change in the material over time for a constant external heat supply.
+
+\section{Scope\label{sec:scope}}
+
+The Enthalpy problem approach is modelled for Aluminium and SS304, whereas the Stefan problem approach is modelled only for the aluminium metal, due to the requirement of strict sharp melting temperature condition.\\
+In the Enthalpy Model\cite{verhoeven2003modelling}, an analytical solution\cite{debnath2010nonlinear} to the temperature distribution for the 1D case is used to verify the results. The analytical solution for the evolution of interface boundary over time has been obtained using the Laplace transform of the one dimensional heat equation\cite{verhoeven2003modelling}.\\
+
+
+
+
+\noindent The following gives a brief overview of the report. 
+\\
+\\
+\textbf{Chapter \ref{cha:chapter2}} explains the mathematical formulation for both the problems. The related weak forms and the necessity to non dimensionalize the variables is discussed in this chapter.
+\\
+\\
+\textbf{Chapter \ref{cha:chapter3}} gives an overview of the solution techniques used to solve the problem.
+\\
+\\
+\textbf{Chapter \ref{cha:chapter4}} this chapter deals with the testing. Here, we discuss the unit testing carried out for each function, the inputs given, the expected output and the reason for the expected output.
+\\
+\\
+\textbf{Chapter \ref{cha:chapter5}} is the chapter related to verification. Here we discuss the setups used to verify our schemes, the various loading condition and the initial condition along with the required equations.
+\\
+\\
+\textbf{Chapter \ref{cha:chapter6}} the results obtained after running our program for the validation setup described in the previous chapter is discussed here.
+\\
+\\
+\textbf{Chapter \ref{cha:Manual}} commands to run the provided code is given in this chapter.
+\\
+\\
+\textbf{Chapter \ref{cha:Computational Study time}} computational time study is carried out in this chapter.
+\\
+\\
+\textbf{Chapter \ref{cha:chapter7}} conclusion, problems faced and experiences are presented in this chapter.

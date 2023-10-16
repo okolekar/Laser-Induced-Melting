@@ -1,0 +1,181 @@
+\chapter{Testing\label{cha:chapter4}}
+\section{Unit Testing}
+In this section we discuss the testing of the material specific libraries and the meshing library.\\
+In the code, we have set the run count variable = 3, as for the very first run at time = 0 and run count = 0, the program outputs which type of material was detected as a check point to ensure proper functioning of the program. We refer to all the physical quantities as dimensionless quantities unless specified. For all testing purpose, we have assumed the length for the simulation to be 1 unit and the number of nodes to be 100.
+\subsection{Test temperature enthalpy relation for amorphous material}
+I will reiterate the temperature enthalpy relation for the amorphous material here for ease of reference within this section.\\ 
+$\text{H(T)} =
+\begin{cases}
+D_2 T, & T \leq 0, \\ \\
+D_2 T+ D_2 \lambda_f \frac{T}{T_{liq}}, & 0 \leq T \leq T_{liq}, \\ \\
+D_2 T + D_2\lambda_f, & T > T_{liq}
+\end{cases}\quad\text{for amorphous materials}$\\ \\
+\underline{Aim:} To check whether $\frac{\partial T}{\partial H}(H)$ in the user defined material model in the equation \ref{eq:Decretized_dG_matrix} functions correctly.\\ \\
+\underline{Risks:} It is an important part of the material model as it defines the relation of temperature with the enthalpy. If this part of the code fails especially at the phase change, inaccurate slope values will be generated leading to an inaccurate position of the interface or may produce nonphysical results. The most important part is when the nodal non dimensional enthalpy is close to 0 or $H_{liq}$ as these are the points of sharp transition and sudden changes in the slope. Hence, we mainly focus on these inputs.\\ \\
+\underline{Values of interest:} The enthalpy value between 0 and $H_{liq}$ are of concern as the slope changes here and attains the value $\frac{T_{\text{liq}}}{D T_{\text{liq}} + D \lambda_{f}}$. In the liquid and the solid phase the slope is simply defined by $\frac{1}{D}$. \\
+
+\noindent \underline{Inputs required:} For this function we need to provide the inputs in the following form dT\textunderscore dH [material type, nodal Enthalpy values, run count], material type = 1 shows it is a crystalline material and 2 indicates its an amorphous material. $H_{liq}$ is the dimensionless enthalpy at the liquidus temperature calculated as per the equation \ref{eq:liqudiousnonenahlpy},  Below we discuss the various nodal values of the $H_{liq}$ that were passed as an input.\\ \\
+\underline{Input:} [-1, $H_{\text{liq}}$+0.5]\\ \\
+\underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{1}{D} & 0 \\
+0 & \frac{1}{D}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Enthalpy = -1 indicates material is still in solid phase and the $H_{\text{liq}}$+0.5 indicate that material is in liquid state. For both the inputs the slope is defined as $\frac{1}{D}$\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Input:} [0, $H_{\text{liq}}$]\\ \\
+\underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{1}{D} & 0 \\
+0 & \frac{T_{\text{liq}}}{D T_{\text{liq}} + D \lambda_{f}}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Enthalpy equal to 0 indicates that the material is starting to undergo a phase change, and the temperature does not change. However, for amorphous materials, the slope changes after the enthalpy surpasses 0. $H_{\text{liq}}$ signifies that the material is undergoing a phase change, and the slope is determined by $\frac{T_{\text{liq}}}{D T_{\text{liq}} + D \lambda_{f}}$.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Input:} [0.000001, $H_{\text{liq}}$+0.000001]\\ \\
+\underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{T_{\text{liq}}}{D T_{\text{liq}} + D \lambda_{f}} & 0 \\
+0 & \frac{1}{D}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} The first nodal enthalpy shows that the material is changing phase and the second nodal enthalpy indicates that the material is in liquid state.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Input:} [0, $H_{\text{liq}}$-0.000001]\\ \\
+
+\noindent \underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{1}{D} & 0 \\
+0 & \frac{T_{\text{liq}}}{D T_{\text{liq}} + D \lambda_{f}}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} The first nodal enthalpy shows that the material just started to change phase hence, considered to be in solid phase, and the second nodal enthalpy indicates that the material is in the phase change regime.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Command for the test:} pytest Test\textunderscore Amorphous.py\\
+
+\subsection{Test temperature enthalpy relation for crystalline material}
+I will reiterate the temperature enthalpy relation for the crystalline material here for ease of reference within this section.\\
+$\text{H(T)} =
+\begin{cases}
+D_1 T, & \text{T < 0}, \\ \\
+[0, D_1 \lambda_f], & \text{T = 0}, \\ \\
+D_1 T + D_1\lambda_f, & \text{T > 0}
+\end{cases}\quad\quad\quad\quad\quad\text{for crystalline materials}$ \\ \\
+\underline{Aim:} The objective is similar as discussed in the above section. The only difference is that the value of the slope changes. Here, the slope is zero during the phase change.\\ \\
+\underline{Values of interest:} The enthalpy value between 0 and $D \lambda_f$ are of concern as the slope changes to 0 here. In the liquid and the solid phase the slope is simply defined by $\frac{1}{D}$. \\ \\
+\underline{Input:} [-1, $D \lambda_\text{f}$]\\ \\
+\noindent\underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{1}{D} & 0 \\
+0 & 0
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Enthalpy = -1 indicates material is in solid state. $D \lambda_f$ shows that the material is in the phase change and the slope is 0.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Input:} [0, $D \lambda_\text{f} + 0.5$]\\ \\
+\underline{Output Expected:}
+\[
+\begin{bmatrix}
+0 & 0 \\
+0 & \frac{1}{D}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Enthalpy = 0 indicates material in phase change process and the slope is 0. $D \lambda_f$ +0.5 shows that the material is in the liquid phase.\\ \\
+\underline{Status:} Passed\\
+
+\noindent\underline{Input:} [$\lambda_\text{f} , -1$]\\ \\
+\noindent\underline{Output Expected:}
+\[
+\begin{bmatrix}
+\frac{1}{D} & 0 \\
+0 & \frac{1}{D}
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Both the nodal enthalpies indicate material in liquid and solid state respectively.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Input:} [0, $D \lambda_f$] \\ \\
+
+\noindent \underline{Output Expected:}
+\[
+\begin{bmatrix}
+0 & 0 \\
+0 & 0
+\end{bmatrix}
+\]
+\underline{Reason for the Output Expected:} Both the nodal enthalpies indicate material under going phase change.\\ \\
+\underline{Status:} Passed\\
+
+\noindent \underline{Command for the test:} pytest Test\textunderscore Crystalline.py\\
+
+\subsection{Test Shape Function Derivative}
+\underline{Aim:} The derivative of the shape function describe the change of the open coefficients (in our case temperature) with respect to space. This is completely different than the slopes described above. In the above section, we tested the change of temperature with respect to enthalpy and not with respect to space. The objective is to check if the shape function were correctly derived. \\ \\
+
+\noindent \underline{Input:} [2, 1]\\ \\
+\underline{Expected Output:} -100.\\ \\
+\underline{Reason for the Output Expected:}  Since, the length of the material is 1 unit and the number of nodes are 100, we know that the elemental length $l_e$ will be 0.01. By the definition of the derivative $\frac{T_2-T_1}{l_e}$ we have $\frac{1-2}{0.01}$ = -100.\\ \\
+\underline{Status:} Passed\\ \\
+
+\noindent \underline{Input:} [1, 3]\\ \\
+\underline{Expected Output:} 200.\\ \\
+\underline{Reason for the Output Expected:} Since, the length of the material is 1 unit and the number of nodes are 100, we know that 0.01 will be the elemental length $l_e$. By the definition of the derivative $\frac{T_2-T_1}{l_e}$ we have $\frac{3-1}{0.01}$ = 200.\\ \\
+\underline{Status:} Passed\\ \\
+\noindent \underline{Input:} [4, 4]\\ \\
+\underline{Expected Output:} 0.\\ \\
+\underline{Reason for the Output Expected:}  Since, the length of the material is 1 unit and the number of nodes are 100, we know that the elemental length $l_e$ will be 0.01.. By the definition of the derivative $\frac{T_2-T_1}{l_e}$ we have $\frac{4-4}{0.01}$ = 0.\\ \\
+\underline{Status:} Passed\\ 
+\noindent \underline{Command for the test:} pytest Mesh\textunderscore Test.py\\
+
+\subsection{Test Partition of Unity}
+\underline{Aim:} The shape functions are used to interpolate the values of the open coefficients at the nodes within the element. The partition of unit test is used to check if the sum of the shape functions at any point within the element is equal to 1. Failing this check means that the physical quantity of interest is not conserved within the element leading to incorrect calculation or definition of the shape function.\\ \\
+\noindent \underline{Input:}[0.5] (value of local co-ordinate).\\ \\
+\underline{Expected Output:} 1\\ \\
+\underline{Reason for the Output Expected:} Property of the shape function.\\ \\
+\underline{Status:} Passed\\ \\
+\noindent \underline{Command for the test:} pytest Mesh\textunderscore Test.py\\
+
+\subsection{Test Jacobian}
+\underline{Aim:} To check if the determinant of Jacobian is positive. Since we work with linear shape functions, our Jacobian will be exactly half of the elemental length. Failing this test means that the geometry is not being conserved correctly.\\ \\
+\noindent \underline{Input:} [2] (element number).\\ \\
+\underline{Expected Output:} $\frac{(x_3-x_2)}{2} $ \\ \\
+\underline{Reason for the Expected Output:} Here $x_3$ = global $x$ co-ordinate of the third node and $x_2$ = global $x$ co-ordinate of the second node\\ \\
+\underline{Status:} Passed\\ \\
+\noindent \underline{Command for the test:} pytest Mesh\textunderscore Test.py\\
+
+\section{Unit Tests 2D}
+We have created an instance of 2D mesh class by creating 5 x 5 nodes and assuming the length of the square to be 1 unit. All the tests were performed for element 3. 
+\subsection{Test Partition of Unity}
+\underline{Aim:} This is similar to the 1D partition of unity test. However, here we pass the Gauss quadrature points and iterate over all the points, and  for every iteration we check if the sum of the shape function is equal to 1. The weights for these points are unity.\\ \\
+\noindent \underline{Input:} Gauss points = [-0.577350269189626, 0.577350269189626].\\ \\
+\underline{Expected Output:} 1\\ \\
+\underline{Status:} Passed\\ \\
+\noindent \underline{Command for the test:} pytest Test\textunderscore Mesh\textunderscore 2D.py\\
+
+\subsection{Test Jacobian}
+\underline{Aim:} To check the determinant of the Jacobian is always positive and the sum of the determinant of the Jacobian over the Gauss quadrature is equal to the area of the element.\\ \\
+\noindent \underline{Input:} Gauss points = [-0.577350269189626, 0.577350269189626].\\ \\
+\underline{Expected Output:} $(x_2-x_0) \times (y_2-y_0)$ \\ \\
+\underline{Reason for the Expected Output:} The determinant of the Jacobian is equal to the area of the element. It is the scaling factor by which the area changes during the transformation of the global co-ordinates to isoparametric co-ordinates. Also, in our mesh for an element, $x_2 = x_1$, $x_0 = x_3$, $y_2 = y_1$ and $y_0 = y_3$.\\ \\
+\underline{Status:} Passed\\ \\
+\noindent \underline{Command for the test:} pytest Test\textunderscore Mesh\textunderscore 2D.py\\
+
+\subsection{Test derivative of the shape function}
+\underline{Aim:} It is the same test as the 'Test Shape Function Derivative' in 1D, here we check it for 2D.\\ \\
+\noindent \underline{Input:} We check the derivative on the nodal points hence we pass $\xi$ = 1 and $\eta$ = 1 (local co-ordinates) for the third element. The nodal temperature was [1,2,3,4]. \\ \\
+\underline{Expected Output:} 1) $\frac{T_2-T_3}{(x_2-x_0)}$\\
+\indent \indent \indent \indent \indent \indent \indent \indent \ 2) $\frac{T_2-T_1}{(y_2-y_0)}$\\ \\
+\underline{Reason for the Expected Output:} Due to the input local co-ordinates, the derivative of shape function wrt $x$ has entries in 2 and 3 and for $y$ we have entries in 1 and 2 all other entries in the $dN$ vector are 0.\\ \\
+\underline{Status:} Passed\\ \\
+
+\noindent \underline{Command for the test:} pytest Test\textunderscore Mesh\textunderscore 2D.py\\
