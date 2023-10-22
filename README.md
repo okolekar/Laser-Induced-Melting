@@ -1,10 +1,10 @@
 # Laser-Induced-Melting
 
 ## Project Description
-This repository contains a Python program for simulating Laser Induced Melting. I have used the Enthalpy and Stefan approach.
+This repository contains a Python program for simulating Laser Induced Melting along with some standard test case. I have used the Enthalpy and Stefan approach.
 
 ## Installation
-Clone this repository to your local machine.
+Clone this repository to your local machine.\\
 Make sure that you have installed python 3.11, Numpy, math and Matplotlib library.
 
 ## Documentation
