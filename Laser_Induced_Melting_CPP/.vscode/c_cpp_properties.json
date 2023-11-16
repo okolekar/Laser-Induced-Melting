@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build Matrix_Mult_verify",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "MatrixMult.cpp",
+                "-o",
+                "MatrixMult.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build Test_code",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "Test_code.cpp",
+                "-o",
+                "Test_code.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "link",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "MatrixMult.o",
+                "Test_code.o",
+                "-o",
+                "Matrix_Mult_verify"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
