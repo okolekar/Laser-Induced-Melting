@@ -12,4 +12,4 @@ Make sure that you have installed python 3.11, Numpy, math and Matplotlib librar
 Detailed technical information, methodology, and analysis can be found in the [documentation](Laser_Induced_Melting/Documentation/Laser_Induced_Melting_Report.pdf) section.
 
 ## Contact Information
-For questions or collaboration, please contact Omkar Kolekar at okolekar123@gamil.com.
+For questions or collaboration, please contact Omkar Kolekar at okolekar123@gmail.com.
